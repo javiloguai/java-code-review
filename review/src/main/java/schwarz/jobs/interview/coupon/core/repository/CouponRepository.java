@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import schwarz.jobs.interview.coupon.core.domain.Coupon;
+import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 
-public interface CouponRepository extends JpaRepository<Coupon, Long> {
+public interface CouponRepository extends JpaRepository<CouponEntity, Long> {
 
-    Optional<Coupon> findByCode(final String code);
+    Optional<CouponEntity> findByCode(final String code);
 
 }

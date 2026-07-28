@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import schwarz.jobs.interview.coupon.core.domain.Coupon;
+import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.ApplicationRequestDTO;
@@ -56,15 +56,15 @@ public class CouponResourceController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Coupon> create(@RequestBody @Valid final CouponDTO couponDTO) {
+    public ResponseEntity<CouponEntity> create(@RequestBody @Valid final CouponDTO couponDTO) {
 
-        final Coupon coupon = couponService.createCoupon(couponDTO);
+        final CouponEntity couponEntity = couponService.createCoupon(couponDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(coupon);
+        return ResponseEntity.status(HttpStatus.CREATED).body(couponEntity);
     }
 
     @GetMapping("/coupons")
-    public ResponseEntity<List<Coupon>> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
+    public ResponseEntity<List<CouponEntity>> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
 
         return ResponseEntity.ok(couponService.getCoupons(couponRequestDTO));
     }

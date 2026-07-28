@@ -18,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import schwarz.jobs.interview.coupon.core.domain.Coupon;
+import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
@@ -53,7 +53,7 @@ public class CouponServiceTest {
             .value(BigDecimal.valueOf(100))
             .build();
 
-        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
+        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(CouponEntity.builder()
             .code("1111")
             .discount(BigDecimal.TEN)
             .minBasketValue(BigDecimal.valueOf(50))
@@ -95,21 +95,21 @@ public class CouponServiceTest {
             .build();
 
         when(couponRepository.findByCode(any()))
-            .thenReturn(Optional.of(Coupon.builder()
+            .thenReturn(Optional.of(CouponEntity.builder()
                 .code("1111")
                 .discount(BigDecimal.TEN)
                 .minBasketValue(BigDecimal.valueOf(50))
                 .build()))
-            .thenReturn(Optional.of(Coupon.builder()
+            .thenReturn(Optional.of(CouponEntity.builder()
                 .code("1234")
                 .discount(BigDecimal.TEN)
                 .minBasketValue(BigDecimal.valueOf(50))
                 .build()));
 
-        List<Coupon> returnedCoupons = couponService.getCoupons(dto);
+        List<CouponEntity> returnedCouponEntities = couponService.getCoupons(dto);
 
-        assertThat(returnedCoupons.get(0).getCode()).isEqualTo("1111");
+        assertThat(returnedCouponEntities.get(0).getCode()).isEqualTo("1111");
 
-        assertThat(returnedCoupons.get(1).getCode()).isEqualTo("1234");
+        assertThat(returnedCouponEntities.get(1).getCode()).isEqualTo("1234");
     }
 }
