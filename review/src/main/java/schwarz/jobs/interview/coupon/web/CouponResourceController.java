@@ -8,11 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +19,11 @@ import schwarz.jobs.interview.coupon.web.dto.ApplicationRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @Slf4j
-public class CouponResource {
+public class CouponResourceController {
 
     private final CouponService couponService;
 
@@ -60,16 +56,16 @@ public class CouponResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> create(@RequestBody @Valid final CouponDTO couponDTO) {
+    public ResponseEntity<Coupon> create(@RequestBody @Valid final CouponDTO couponDTO) {
 
         final Coupon coupon = couponService.createCoupon(couponDTO);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(coupon);
     }
 
     @GetMapping("/coupons")
-    public List<Coupon> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
+    public ResponseEntity<List<Coupon>> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
 
-        return couponService.getCoupons(couponRequestDTO);
+        return ResponseEntity.ok(couponService.getCoupons(couponRequestDTO));
     }
 }
