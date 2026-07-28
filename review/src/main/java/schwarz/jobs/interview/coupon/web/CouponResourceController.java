@@ -46,13 +46,9 @@ public class CouponResourceController {
             return ResponseEntity.notFound().build();
         }
 
-        if (!applicationRequestDTO.getBasket().isApplicationSuccessful()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
         log.info("Applied coupon");
 
-        return ResponseEntity.ok().body(applicationRequestDTO.getBasket());
+        return ResponseEntity.ok().body(basket.get());
     }
 
     @PostMapping("/create")

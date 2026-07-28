@@ -1,10 +1,15 @@
 package schwarz.jobs.interview.coupon.core.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import lombok.RequiredArgsConstructor;
 import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
@@ -14,58 +19,44 @@ import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class CouponService {
 
     private final CouponRepository couponRepository;
 
-    public Optional<CouponEntity> getCoupon(final String code) {
+    public Optional<CouponEntity> getCoupon(@NotBlank final String code) {
         return couponRepository.findByCode(code);
     }
 
-    public Optional<Basket> apply(final Basket basket, final String code) {
+    public Optional<Basket> apply(@Valid final Basket basket, @NotBlank final String code) {
 
         return getCoupon(code).map(couponEntity -> {
 
-            if (basket.getValue().doubleValue() >= 0) {
+            final BigDecimal minBasketValue = couponEntity.getMinBasketValue();
 
-                if (basket.getValue().doubleValue() > 0) {
-
-                    basket.applyDiscount(couponEntity.getDiscount());
-
-                } else if (basket.getValue().doubleValue() == 0) {
-                    return basket;
-                }
-
-            } else {
-                System.out.println("DEBUG: TRIED TO APPLY NEGATIVE DISCOUNT!");
-                throw new RuntimeException("Can't apply negative discounts");
+            if (minBasketValue != null && basket.getValue().compareTo(minBasketValue) < 0) {
+                throw new MinBasketValueNotMetException(code, basket.getValue(), minBasketValue);
             }
+
+            basket.applyDiscount(couponEntity.getDiscount());
 
             return basket;
         });
     }
 
-    public CouponEntity createCoupon(final CouponDTO couponDTO) {
+    public CouponEntity createCoupon(@Valid final CouponDTO couponDTO) {
 
-        CouponEntity couponEntity = null;
-
-        try {
-            couponEntity = CouponEntity.builder()
-                .code(couponDTO.getCode().toLowerCase())
-                .discount(couponDTO.getDiscount())
-                .minBasketValue(couponDTO.getMinBasketValue())
-                .build();
-
-        } catch (final NullPointerException e) {
-
-            // Don't coupon when code is null
-        }
+        final CouponEntity couponEntity = CouponEntity.builder()
+            .code(couponDTO.getCode().toLowerCase())
+            .discount(couponDTO.getDiscount())
+            .minBasketValue(couponDTO.getMinBasketValue())
+            .build();
 
         return couponRepository.save(couponEntity);
     }
 
-    public List<CouponEntity> getCoupons(final CouponRequestDTO couponRequestDTO) {
+    public List<CouponEntity> getCoupons(@Valid final CouponRequestDTO couponRequestDTO) {
 
         final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
 
