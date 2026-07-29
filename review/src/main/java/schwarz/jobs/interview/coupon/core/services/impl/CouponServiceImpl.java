@@ -69,7 +69,7 @@ public class CouponServiceImpl implements CouponService {
         final CouponDomain couponDomain = CouponDomain.builder()
             .code(command.getCode().toUpperCase())
             .discount(command.getDiscount())
-            .minBasketValue(couponDTO.getMinBasketValue())
+            .minBasketValue(command.getMinBasketValue())
             .build();
 
         final CouponEntity couponEntity = couponDataBaseMapper.domainToEntity(couponDomain);
