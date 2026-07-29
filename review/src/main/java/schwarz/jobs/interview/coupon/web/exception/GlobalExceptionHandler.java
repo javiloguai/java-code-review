@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.web.excepcion;
+package schwarz.jobs.interview.coupon.web.exception;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -19,6 +19,9 @@ import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
 import schwarz.jobs.interview.coupon.web.dto.response.ErrorResponse;
 
+/**
+ * Turns the exceptions the app throws into consistent HTTP error responses.
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {

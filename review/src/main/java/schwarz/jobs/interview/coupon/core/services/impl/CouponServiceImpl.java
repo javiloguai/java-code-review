@@ -24,6 +24,9 @@ import schwarz.jobs.interview.coupon.core.services.model.command.CreateCouponCom
 import schwarz.jobs.interview.coupon.core.services.model.domain.BasketDomain;
 import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
 
+/**
+ * Default implementation of {@link CouponService}.
+ */
 @Service
 @Validated
 @RequiredArgsConstructor
@@ -60,11 +63,13 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponDomain createCoupon(@Valid final CreateCouponCommand couponDTO) {
 
-        final CouponEntity couponEntity = CouponEntity.builder()
+        final CouponDomain couponDomain = CouponDomain.builder()
             .code(couponDTO.getCode().toUpperCase())
             .discount(couponDTO.getDiscount())
             .minBasketValue(couponDTO.getMinBasketValue())
             .build();
+
+        final CouponEntity couponEntity = couponDataBaseMapper.domainToEntity(couponDomain);
 
         return couponDataBaseMapper.entityToDomain(couponRepository.save(couponEntity));
     }

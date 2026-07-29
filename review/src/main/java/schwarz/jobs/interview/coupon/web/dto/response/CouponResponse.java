@@ -1,13 +1,15 @@
 package schwarz.jobs.interview.coupon.web.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
+/**
+ * A coupon as returned to API clients.
+ */
 @Data
 @Builder
 @NoArgsConstructor
