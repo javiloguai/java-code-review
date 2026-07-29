@@ -16,11 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
-import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
+import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.impl.CouponServiceImpl;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
-import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
+import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
 
 @ExtendWith(SpringExtension.class)
 public class CouponServiceTest {
@@ -47,7 +47,7 @@ public class CouponServiceTest {
     @Test
     public void test_apply_coupon_method() {
 
-        final Basket firstBasket = Basket.builder()
+        final BasketDomain firstBasket = BasketDomain.builder()
             .value(BigDecimal.valueOf(100))
             .build();
 
@@ -57,14 +57,14 @@ public class CouponServiceTest {
 //            .minBasketValue(BigDecimal.valueOf(50))
 //            .build()));
 
-        Optional<Basket> optionalBasket = couponService.apply(firstBasket, "1111");
+        Optional<BasketDomain> optionalBasket = couponService.apply(firstBasket, "1111");
 
         assertThat(optionalBasket).hasValueSatisfying(b -> {
             assertThat(b.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
             assertThat(b.isApplicationSuccessful()).isTrue();
         });
 
-        final Basket secondBasket = Basket.builder()
+        final BasketDomain secondBasket = BasketDomain.builder()
             .value(BigDecimal.valueOf(0))
             .build();
 
@@ -75,7 +75,7 @@ public class CouponServiceTest {
             assertThat(b.isApplicationSuccessful()).isFalse();
         });
 
-        final Basket thirdBasket = Basket.builder()
+        final BasketDomain thirdBasket = BasketDomain.builder()
             .value(BigDecimal.valueOf(-1))
             .build();
 

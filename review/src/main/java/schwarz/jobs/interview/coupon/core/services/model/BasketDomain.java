@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Basket {
+public class BasketDomain {
 
     @NotNull
     @PositiveOrZero

@@ -1,10 +1,10 @@
-package schwarz.jobs.interview.coupon.core.repository;
+package schwarz.jobs.interview.coupon.core.persistence.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
 
 public interface CouponRepository extends JpaRepository<CouponEntity, Long> {
 

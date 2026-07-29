@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.web;
+package schwarz.jobs.interview.coupon.web.controller;
 
 
 import java.util.List;
@@ -13,11 +13,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
-import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
-import schwarz.jobs.interview.coupon.web.dto.ApplyCouponRequestDTO;
-import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
+import schwarz.jobs.interview.coupon.web.dto.request.ApplyCouponRequestDTO;
+import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
 
 @RestController
 @RequestMapping("/api")
@@ -37,13 +37,13 @@ public class CouponResourceController {
      */
     //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 1")
     @PostMapping(value = "/apply")
-    public ResponseEntity<Basket> applyCoupon(
+    public ResponseEntity<BasketDomain> applyCoupon(
         //@ApiParam(value = "Provides the necessary basket and customer information required for the coupon application", required = true)
         @RequestBody @Valid final ApplyCouponRequestDTO applyCouponRequestDTO) {
 
         log.info("Applying coupon");
 
-        final Optional<Basket> basket =
+        final Optional<BasketDomain> basket =
             couponService.apply(applyCouponRequestDTO.getBasket(), applyCouponRequestDTO.getCode());
 
         if (basket.isEmpty()) {

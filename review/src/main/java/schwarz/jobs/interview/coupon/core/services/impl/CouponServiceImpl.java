@@ -13,16 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.RequiredArgsConstructor;
-import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
-import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
+import lombok.extern.slf4j.Slf4j;
+import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.exception.MinBasketValueNotMetException;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
-import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
+import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
+import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
 
 @Service
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
@@ -32,7 +34,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Optional<Basket> apply(@Valid final Basket basket, @NotBlank final String code) {
+    public Optional<BasketDomain> apply(@Valid final BasketDomain basket, @NotBlank final String code) {
 
         return getCoupon(code).map(couponEntity -> {
 
@@ -65,7 +67,9 @@ public class CouponServiceImpl implements CouponService {
 
         final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
 
-        codes.forEach(code -> foundCouponEntities.add(getCoupon(code).get()));
+        codes.forEach(code -> getCoupon(code).ifPresentOrElse(
+            foundCouponEntities::add,
+            () -> log.warn("Coupon code '{}' not found, skipping", code)));
 
         return foundCouponEntities;
     }

@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.web.dto;
+package schwarz.jobs.interview.coupon.web.dto.request;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
 
 @Data
 @Builder
@@ -21,6 +21,6 @@ public class ApplyCouponRequestDTO {
 
     @NotNull
     @Valid
-    private Basket basket;
+    private BasketDomain basket;
 
 }

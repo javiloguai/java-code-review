@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.core.services.exception;
+package schwarz.jobs.interview.coupon.core.exception;
 
 import java.math.BigDecimal;
 

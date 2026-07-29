@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.web;
+package schwarz.jobs.interview.coupon.web.dto.response;
 
 import java.time.Instant;
 import java.util.Map;

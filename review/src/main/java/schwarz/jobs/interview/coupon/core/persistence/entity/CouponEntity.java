@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.core.domain;
+package schwarz.jobs.interview.coupon.core.persistence.entity;
 
 import java.math.BigDecimal;
 

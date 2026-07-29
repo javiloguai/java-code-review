@@ -1,9 +1,8 @@
-package schwarz.jobs.interview.coupon.web;
+package schwarz.jobs.interview.coupon.web.excepcion;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -15,16 +14,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
-import schwarz.jobs.interview.coupon.core.services.exception.MinBasketValueNotMetException;
+import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
+import schwarz.jobs.interview.coupon.web.dto.response.ErrorResponse;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(final NoSuchElementException ex) {
-        return build(HttpStatus.NOT_FOUND, "Coupon not found", null);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(final MethodArgumentNotValidException ex) {
