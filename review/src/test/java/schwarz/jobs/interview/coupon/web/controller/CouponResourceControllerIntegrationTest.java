@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.web.dto.request.ApplyCouponRequest;
 import schwarz.jobs.interview.coupon.web.dto.request.BasketRequest;
 import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequest;
@@ -24,6 +27,7 @@ import schwarz.jobs.interview.coupon.web.dto.response.CouponResponse;
 import schwarz.jobs.interview.coupon.web.dto.response.ErrorResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +48,9 @@ class CouponResourceControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Nested
     @DisplayName("POST /api/apply")
@@ -191,6 +198,19 @@ class CouponResourceControllerIntegrationTest {
 
             assertThat(error.getFieldErrors()).containsKey("discount");
         }
+
+        @Test
+        @DisplayName("Given a code longer than the database column, when create, then 400 is returned with a field error")
+        void givenCodeLongerThanDatabaseColumnWhenCreateThen400IsReturnedWithFieldError() throws Exception {
+            final CreateCouponRequest request = CreateCouponRequest.builder()
+                .code("A".repeat(251))
+                .discount(BigDecimal.ONE)
+                .build();
+
+            final ErrorResponse error = postAndReturn("/api/create", request, 400, ErrorResponse.class);
+
+            assertThat(error.getFieldErrors()).containsKey("code");
+        }
     }
 
     @Nested
@@ -244,6 +264,25 @@ class CouponResourceControllerIntegrationTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{not valid json"))
                 .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("code uniqueness at the database level")
+    class CodeUniqueness {
+
+        @Test
+        @DisplayName("Given a code that already exists with different case, when saved directly through the repository, then the database rejects it")
+        void givenCodeThatAlreadyExistsWithDifferentCaseWhenSavedDirectlyThenDatabaseRejectsIt() {
+            // Bypasses CouponServiceImpl's uppercase normalization on purpose, to prove the
+            // uniqueness invariant is enforced by the database itself, not only by that one write path.
+            final CouponEntity duplicate = CouponEntity.builder()
+                .code("test1")
+                .discount(BigDecimal.ONE)
+                .build();
+
+            assertThatThrownBy(() -> couponRepository.saveAndFlush(duplicate))
+                .isInstanceOf(DataIntegrityViolationException.class);
         }
     }
 

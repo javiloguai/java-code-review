@@ -29,7 +29,7 @@ public class CouponEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "code", unique = true)
+    @Column(name = "code", unique = true, columnDefinition = "VARCHAR_IGNORECASE(250)")
     private String code;
 
     @Column(name = "discount", precision = 10, scale = 2)
