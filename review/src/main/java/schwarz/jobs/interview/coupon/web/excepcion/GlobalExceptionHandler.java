@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -44,6 +45,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MinBasketValueNotMetException.class)
     public ResponseEntity<ErrorResponse> handleMinBasketValueNotMet(final MinBasketValueNotMetException ex) {
         return build(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(final DataIntegrityViolationException ex) {
+        return build(HttpStatus.CONFLICT, "Coupon code already exists", null);
     }
 
     @ExceptionHandler(Exception.class)
