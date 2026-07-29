@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "coupons")
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
