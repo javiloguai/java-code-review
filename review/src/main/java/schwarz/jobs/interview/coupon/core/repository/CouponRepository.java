@@ -8,6 +8,6 @@ import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 
 public interface CouponRepository extends JpaRepository<CouponEntity, Long> {
 
-    Optional<CouponEntity> findByCode(final String code);
+    Optional<CouponEntity> findByCodeIgnoreCase(final String code);
 
 }

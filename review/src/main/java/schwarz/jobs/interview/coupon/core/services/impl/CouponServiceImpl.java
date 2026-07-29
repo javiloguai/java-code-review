@@ -28,7 +28,7 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
 
     public Optional<CouponEntity> getCoupon(@NotBlank final String code) {
-        return couponRepository.findByCode(code);
+        return couponRepository.findByCodeIgnoreCase(code);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CouponServiceImpl implements CouponService {
     public CouponEntity createCoupon(@Valid final CreateCouponRequestDTO couponDTO) {
 
         final CouponEntity couponEntity = CouponEntity.builder()
-            .code(couponDTO.getCode().toLowerCase())
+            .code(couponDTO.getCode().toUpperCase())
             .discount(couponDTO.getDiscount())
             .minBasketValue(couponDTO.getMinBasketValue())
             .build();
@@ -65,7 +65,7 @@ public class CouponServiceImpl implements CouponService {
 
         final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
 
-        couponRequestDTO.getCodes().forEach(code -> foundCouponEntities.add(couponRepository.findByCode(code).get()));
+        couponRequestDTO.getCodes().forEach(code -> foundCouponEntities.add(couponRepository.findByCodeIgnoreCase(code).get()));
 
         return foundCouponEntities;
     }
