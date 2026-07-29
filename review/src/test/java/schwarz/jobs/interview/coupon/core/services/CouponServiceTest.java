@@ -51,11 +51,11 @@ public class CouponServiceTest {
             .value(BigDecimal.valueOf(100))
             .build();
 
-        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(CouponEntity.builder()
-            .code("1111")
-            .discount(BigDecimal.TEN)
-            .minBasketValue(BigDecimal.valueOf(50))
-            .build()));
+//        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(CouponEntity.builder()
+//            .code("1111")
+//            .discount(BigDecimal.TEN)
+//            .minBasketValue(BigDecimal.valueOf(50))
+//            .build()));
 
         Optional<Basket> optionalBasket = couponService.apply(firstBasket, "1111");
 
