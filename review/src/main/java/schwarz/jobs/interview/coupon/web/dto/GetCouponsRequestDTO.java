@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponRequestDTO {
+public class GetCouponsRequestDTO {
 
     @NotNull
     private List<String> codes;
