@@ -267,7 +267,6 @@ class CouponServiceImplTest {
         }
     }
 
-    /** (minBasketValue, basketValue) pairs that should qualify for the coupon. */
     private static Stream<Arguments> basketsThatQualify() {
         return Stream.of(
             Arguments.of(BigDecimal.valueOf(50), BigDecimal.valueOf(100)),
