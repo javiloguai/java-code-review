@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * A shopping basket, with or without a coupon applied.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,6 +27,9 @@ public class BasketDomain {
 
     private boolean applicationSuccessful;
 
+    /**
+     * Marks the discount as applied to this basket.
+     */
     public void applyDiscount(final BigDecimal discount) {
         this.applicationSuccessful = true;
         this.appliedDiscount = discount;

@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
+/**
+ * The basket value the client sends when asking to apply a coupon.
+ */
 @Data
 @Builder
 @NoArgsConstructor

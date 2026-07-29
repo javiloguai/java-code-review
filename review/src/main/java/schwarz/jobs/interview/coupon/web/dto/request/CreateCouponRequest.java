@@ -12,6 +12,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Request body for creating a new coupon.
+ */
 @Data
 @Builder
 @NoArgsConstructor

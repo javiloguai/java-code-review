@@ -11,6 +11,9 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
+/**
+ * The data needed to create a new coupon.
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * A coupon as stored in the database.
+ */
 @Entity
 @Table(name = "coupons")
 @Data

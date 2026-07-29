@@ -6,6 +6,9 @@ import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * The standard error body returned for any failed request.
+ */
 @Value
 @Builder
 public class ErrorResponse {

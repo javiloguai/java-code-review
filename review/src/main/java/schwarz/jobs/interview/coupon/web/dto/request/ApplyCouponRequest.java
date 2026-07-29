@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Request body for applying a coupon to a basket.
+ */
 @Data
 @Builder
 @NoArgsConstructor

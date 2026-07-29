@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
+/**
+ * A coupon as used by the business logic, independent of how it's persisted.
+ */
 @Data
 @Builder
 @NoArgsConstructor

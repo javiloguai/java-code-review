@@ -21,6 +21,9 @@ import schwarz.jobs.interview.coupon.web.dto.response.BasketResponse;
 import schwarz.jobs.interview.coupon.web.dto.response.CouponResponse;
 import schwarz.jobs.interview.coupon.web.mapper.*;
 
+/**
+ * REST endpoints for coupons: apply, create and look up.
+ */
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -42,8 +45,7 @@ public class CouponResourceController {
     }
 
     /**
-     * @param applyCouponRequest
-     * @return
+     * Applies a coupon to a basket.
      */
     //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 1")
     @PostMapping(value = "/apply")
@@ -61,6 +63,9 @@ public class CouponResourceController {
         return ResponseEntity.ok().body(basketResponseMapper.toResponse(basket));
     }
 
+    /**
+     * Creates a new coupon.
+     */
     @PostMapping("/create")
     public ResponseEntity<CouponResponse> createCoupon(@RequestBody @Valid final CreateCouponRequest createCouponRequest) {
 
@@ -69,6 +74,9 @@ public class CouponResourceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(couponResponseMapper.toResponse(coupon));
     }
 
+    /**
+     * Looks up coupons by code. Unknown codes are skipped, not an error.
+     */
     @GetMapping("/coupons")
     public ResponseEntity<List<CouponResponse>> getCoupons(@RequestParam @NotEmpty final List<String> codes) {
 
