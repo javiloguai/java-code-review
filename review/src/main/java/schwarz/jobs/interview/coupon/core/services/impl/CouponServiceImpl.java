@@ -1,27 +1,24 @@
 package schwarz.jobs.interview.coupon.core.services.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
+import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
 import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
 import schwarz.jobs.interview.coupon.core.persistence.mapper.CouponDataBaseMapper;
 import schwarz.jobs.interview.coupon.core.persistence.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
-import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
 import schwarz.jobs.interview.coupon.core.services.model.command.CreateCouponCommand;
 import schwarz.jobs.interview.coupon.core.services.model.domain.BasketDomain;
 import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Default implementation of {@link CouponService}.
@@ -67,11 +64,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponDomain createCoupon(@Valid final CreateCouponCommand couponDTO) {
+    public CouponDomain createCoupon(@Valid final CreateCouponCommand command) {
 
         final CouponDomain couponDomain = CouponDomain.builder()
-            .code(couponDTO.getCode().toUpperCase())
-            .discount(couponDTO.getDiscount())
+            .code(command.getCode().toUpperCase())
+            .discount(command.getDiscount())
             .minBasketValue(couponDTO.getMinBasketValue())
             .build();
 

@@ -22,7 +22,7 @@ public interface CouponService {
     /**
      * Creates a new coupon.
      */
-    CouponDomain createCoupon(@Valid CreateCouponCommand couponDTO);
+    CouponDomain createCoupon(@Valid CreateCouponCommand command);
 
     /**
      * Looks up coupons by code, skipping any code that doesn't exist.
