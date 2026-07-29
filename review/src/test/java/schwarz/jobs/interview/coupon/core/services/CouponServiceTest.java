@@ -20,22 +20,23 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
+import schwarz.jobs.interview.coupon.core.services.impl.CouponServiceImpl;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
-import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
-import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
+import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.web.dto.GetCouponsRequestDTO;
 
 @ExtendWith(SpringExtension.class)
 public class CouponServiceTest {
 
     @InjectMocks
-    private CouponService couponService;
+    private CouponServiceImpl couponService;
 
     @Mock
     private CouponRepository couponRepository;
 
     @Test
     public void createCoupon() {
-        CouponDTO dto = CouponDTO.builder()
+        CreateCouponRequestDTO dto = CreateCouponRequestDTO.builder()
             .code("12345")
             .discount(BigDecimal.TEN)
             .minBasketValue(BigDecimal.valueOf(50))
@@ -90,7 +91,7 @@ public class CouponServiceTest {
     @Test
     public void should_test_get_Coupons() {
 
-        CouponRequestDTO dto = CouponRequestDTO.builder()
+        GetCouponsRequestDTO dto = GetCouponsRequestDTO.builder()
             .codes(Arrays.asList("1111", "1234"))
             .build();
 
