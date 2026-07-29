@@ -64,6 +64,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(final DataIntegrityViolationException ex) {
+        log.warn("Data integrity violation", ex);
         return build(HttpStatus.CONFLICT, "Coupon code already exists", null);
     }
 
