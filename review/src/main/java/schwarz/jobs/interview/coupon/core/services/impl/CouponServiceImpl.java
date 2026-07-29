@@ -1,7 +1,6 @@
 package schwarz.jobs.interview.coupon.core.services.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,13 +82,6 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<CouponDomain> getCoupons(@NotEmpty final List<String> codes) {
-
-        final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
-
-        codes.forEach(code -> getCoupon(code).ifPresentOrElse(
-            foundCouponEntities::add,
-            () -> log.warn("Coupon code '{}' not found, skipping", code)));
-
-        return couponDataBaseMapper.entityToDomain(foundCouponEntities);
+        return couponDataBaseMapper.entityToDomain(couponRepository.findByCodeIgnoreCaseIn(codes));
     }
 }

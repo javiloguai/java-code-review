@@ -214,6 +214,14 @@ class CouponResourceControllerIntegrationTest {
         }
 
         @Test
+        @DisplayName("Given a repeated code, when getCoupons, then it's returned only once")
+        void givenRepeatedCodeWhenGetCouponsThenItIsReturnedOnlyOnce() throws Exception {
+            final List<CouponResponse> result = getAndReturnList("/api/coupons?codes=TEST1&codes=TEST1");
+
+            assertThat(result).extracting(CouponResponse::getCode).containsExactly("TEST1");
+        }
+
+        @Test
         @DisplayName("Given no codes are provided, when getCoupons, then 400 is returned")
         void givenNoCodesProvidedWhenGetCouponsThen400IsReturned() throws Exception {
             final MvcResult result = mockMvc.perform(get("/api/coupons"))

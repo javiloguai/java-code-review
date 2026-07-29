@@ -187,8 +187,7 @@ class CouponServiceImplTest {
                 CouponDomain.builder().id(1L).code("TEST1").build(),
                 CouponDomain.builder().id(2L).code("TEST2").build());
 
-            when(couponRepository.findByCodeIgnoreCase("TEST1")).thenReturn(Optional.of(entity1));
-            when(couponRepository.findByCodeIgnoreCase("TEST2")).thenReturn(Optional.of(entity2));
+            when(couponRepository.findByCodeIgnoreCaseIn(List.of("TEST1", "TEST2"))).thenReturn(List.of(entity1, entity2));
             when(couponDataBaseMapper.entityToDomain(List.of(entity1, entity2))).thenReturn(expected);
 
             final List<CouponDomain> result = couponService.getCoupons(List.of("TEST1", "TEST2"));
@@ -200,23 +199,20 @@ class CouponServiceImplTest {
         @DisplayName("Given some codes don't exist, when getCoupons, then only the existing coupons are returned")
         void givenSomeCodesDontExistWhenGetCouponsThenOnlyExistingCouponsAreReturned() {
             final CouponEntity entity1 = CouponEntity.builder().id(1L).code("TEST1").build();
-            final ArgumentCaptor<List<CouponEntity>> entitiesCaptor = ArgumentCaptor.forClass(List.class);
 
-            when(couponRepository.findByCodeIgnoreCase("TEST1")).thenReturn(Optional.of(entity1));
-            when(couponRepository.findByCodeIgnoreCase("NOPE")).thenReturn(Optional.empty());
-            when(couponDataBaseMapper.entityToDomain(entitiesCaptor.capture()))
+            when(couponRepository.findByCodeIgnoreCaseIn(List.of("TEST1", "NOPE"))).thenReturn(List.of(entity1));
+            when(couponDataBaseMapper.entityToDomain(List.of(entity1)))
                 .thenReturn(List.of(CouponDomain.builder().id(1L).code("TEST1").build()));
 
             final List<CouponDomain> result = couponService.getCoupons(List.of("TEST1", "NOPE"));
 
-            assertThat(entitiesCaptor.getValue()).containsExactly(entity1);
             assertThat(result).hasSize(1);
         }
 
         @Test
         @DisplayName("Given no codes exist, when getCoupons, then an empty list is returned")
         void givenNoCodesExistWhenGetCouponsThenEmptyListIsReturned() {
-            when(couponRepository.findByCodeIgnoreCase(any())).thenReturn(Optional.empty());
+            when(couponRepository.findByCodeIgnoreCaseIn(List.of("NOPE1", "NOPE2"))).thenReturn(List.of());
             when(couponDataBaseMapper.entityToDomain(List.<CouponEntity>of())).thenReturn(List.of());
 
             final List<CouponDomain> result = couponService.getCoupons(List.of("NOPE1", "NOPE2"));
