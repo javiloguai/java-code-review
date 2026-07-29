@@ -36,7 +36,12 @@ public class CouponResourceController {
     private final CreateCouponRequestMapper createCouponRequestMapper;
     private final CouponResponseMapper couponResponseMapper;
 
-    public CouponResourceController(final CouponService couponService, BasketRequestMapper basketRequestMapper, BasketResponseMapper basketResponseMapper, CreateCouponRequestMapper createCouponRequestMapper, CouponResponseMapper couponResponseMapper) {
+    /**
+     * Constructor injection.
+     */
+    public CouponResourceController(final CouponService couponService, final BasketRequestMapper basketRequestMapper,
+                                    final BasketResponseMapper basketResponseMapper, final CreateCouponRequestMapper createCouponRequestMapper,
+                                    final CouponResponseMapper couponResponseMapper) {
         this.couponService = couponService;
         this.basketRequestMapper = basketRequestMapper;
         this.basketResponseMapper = basketResponseMapper;

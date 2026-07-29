@@ -29,13 +29,20 @@ import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
  */
 @Service
 @Validated
-@RequiredArgsConstructor
 @Slf4j
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
 
     private final CouponDataBaseMapper couponDataBaseMapper;
+
+    /**
+     * Constructor injection.
+     */
+    public CouponServiceImpl(final CouponRepository couponRepository, final CouponDataBaseMapper couponDataBaseMapper) {
+        this.couponRepository = couponRepository;
+        this.couponDataBaseMapper = couponDataBaseMapper;
+    }
 
     private Optional<CouponEntity> getCoupon(@NotBlank final String code) {
         return couponRepository.findByCodeIgnoreCase(code);
