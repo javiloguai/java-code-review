@@ -20,12 +20,15 @@ import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.GetCouponsRequestDTO;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api")
 @Slf4j
 public class CouponResourceController {
 
     private final CouponService couponService;
+
+    public CouponResourceController(final CouponService couponService) {
+        this.couponService = couponService;
+    }
 
     /**
      * @param applyCouponRequestDTO
