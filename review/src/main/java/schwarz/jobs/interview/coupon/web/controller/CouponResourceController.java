@@ -2,7 +2,6 @@ package schwarz.jobs.interview.coupon.web.controller;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -13,11 +12,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
-import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
-import schwarz.jobs.interview.coupon.web.dto.request.ApplyCouponRequestDTO;
-import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.core.services.model.domain.BasketDomain;
+import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
+import schwarz.jobs.interview.coupon.web.dto.request.ApplyCouponRequest;
+import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequest;
+import schwarz.jobs.interview.coupon.web.dto.response.BasketResponse;
+import schwarz.jobs.interview.coupon.web.dto.response.CouponResponse;
+import schwarz.jobs.interview.coupon.web.mapper.*;
 
 @RestController
 @RequestMapping("/api")
@@ -26,46 +28,50 @@ import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
 public class CouponResourceController {
 
     private final CouponService couponService;
+    private final BasketRequestMapper basketRequestMapper;
+    private final BasketResponseMapper basketResponseMapper;
+    private final CreateCouponRequestMapper createCouponRequestMapper;
+    private final CouponResponseMapper couponResponseMapper;
 
-    public CouponResourceController(final CouponService couponService) {
+    public CouponResourceController(final CouponService couponService, BasketRequestMapper basketRequestMapper, BasketResponseMapper basketResponseMapper, CreateCouponRequestMapper createCouponRequestMapper, CouponResponseMapper couponResponseMapper) {
         this.couponService = couponService;
+        this.basketRequestMapper = basketRequestMapper;
+        this.basketResponseMapper = basketResponseMapper;
+        this.createCouponRequestMapper = createCouponRequestMapper;
+        this.couponResponseMapper = couponResponseMapper;
     }
 
     /**
-     * @param applyCouponRequestDTO
+     * @param applyCouponRequest
      * @return
      */
     //@ApiOperation(value = "Applies currently active promotions and coupons from the request to the requested Basket - Version 1")
     @PostMapping(value = "/apply")
-    public ResponseEntity<BasketDomain> applyCoupon(
+    public ResponseEntity<BasketResponse> applyCoupon(
         //@ApiParam(value = "Provides the necessary basket and customer information required for the coupon application", required = true)
-        @RequestBody @Valid final ApplyCouponRequestDTO applyCouponRequestDTO) {
+        @RequestBody @Valid final ApplyCouponRequest applyCouponRequest) {
 
         log.info("Applying coupon");
 
-        final Optional<BasketDomain> basket =
-            couponService.apply(applyCouponRequestDTO.getBasket(), applyCouponRequestDTO.getCode());
-
-        if (basket.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        final BasketDomain basket =
+            couponService.apply(basketRequestMapper.toDomain(applyCouponRequest.getBasket()), applyCouponRequest.getCode());
 
         log.info("Applied coupon");
 
-        return ResponseEntity.ok().body(basket.get());
+        return ResponseEntity.ok().body(basketResponseMapper.toResponse(basket));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CouponEntity> createCoupon(@RequestBody @Valid final CreateCouponRequestDTO couponDTO) {
+    public ResponseEntity<CouponResponse> createCoupon(@RequestBody @Valid final CreateCouponRequest createCouponRequest) {
 
-        final CouponEntity couponEntity = couponService.createCoupon(couponDTO);
+        final CouponDomain coupon = couponService.createCoupon(createCouponRequestMapper.toCommand(createCouponRequest));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(couponEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(couponResponseMapper.toResponse(coupon));
     }
 
     @GetMapping("/coupons")
-    public ResponseEntity<List<CouponEntity>> getCoupons(@RequestParam @NotEmpty final List<String> codes) {
+    public ResponseEntity<List<CouponResponse>> getCoupons(@RequestParam @NotEmpty final List<String> codes) {
 
-        return ResponseEntity.ok(couponService.getCoupons(codes));
+        return ResponseEntity.ok(couponResponseMapper.toResponses(couponService.getCoupons(codes)));
     }
 }

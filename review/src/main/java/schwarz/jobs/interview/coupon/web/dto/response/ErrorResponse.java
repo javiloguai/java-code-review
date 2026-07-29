@@ -11,9 +11,13 @@ import lombok.Value;
 public class ErrorResponse {
 
     Instant timestamp;
+
     int status;
+
     String error;
+
     String message;
+
     Map<String, String> fieldErrors;
 
 }

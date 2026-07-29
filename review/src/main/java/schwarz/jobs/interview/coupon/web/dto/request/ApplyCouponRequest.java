@@ -1,11 +1,8 @@
 package schwarz.jobs.interview.coupon.web.dto.request;
 
-import java.math.BigDecimal;
-
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,16 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCouponRequestDTO {
-
-    @NotNull
-    @Positive
-    private BigDecimal discount;
+public class ApplyCouponRequest {
 
     @NotBlank
     private String code;
 
-    @PositiveOrZero
-    private BigDecimal minBasketValue;
+    @NotNull
+    @Valid
+    private BasketRequest basket;
 
 }

@@ -15,11 +15,14 @@ import org.springframework.validation.annotation.Validated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import schwarz.jobs.interview.coupon.core.persistence.entity.CouponEntity;
+import schwarz.jobs.interview.coupon.core.persistence.mapper.CouponDataBaseMapper;
 import schwarz.jobs.interview.coupon.core.persistence.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
+import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.MinBasketValueNotMetException;
-import schwarz.jobs.interview.coupon.core.services.model.BasketDomain;
-import schwarz.jobs.interview.coupon.web.dto.request.CreateCouponRequestDTO;
+import schwarz.jobs.interview.coupon.core.services.model.command.CreateCouponCommand;
+import schwarz.jobs.interview.coupon.core.services.model.domain.BasketDomain;
+import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
 
 @Service
 @Validated
@@ -29,29 +32,33 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
 
+    private final CouponDataBaseMapper couponDataBaseMapper;
+
     private Optional<CouponEntity> getCoupon(@NotBlank final String code) {
         return couponRepository.findByCodeIgnoreCase(code);
     }
 
     @Override
-    public Optional<BasketDomain> apply(@Valid final BasketDomain basket, @NotBlank final String code) {
+    public BasketDomain apply(@Valid final BasketDomain basket, @NotBlank final String code) {
 
-        return getCoupon(code).map(couponEntity -> {
+        final CouponEntity couponEntity = getCoupon(code)
+            .orElseThrow(() -> new CouponNotFoundException(code));
 
-            final BigDecimal minBasketValue = couponEntity.getMinBasketValue();
+        final CouponDomain coupon = couponDataBaseMapper.entityToDomain(couponEntity);
 
-            if (minBasketValue != null && basket.getValue().compareTo(minBasketValue) < 0) {
-                throw new MinBasketValueNotMetException(code, basket.getValue(), minBasketValue);
-            }
+        final BigDecimal minBasketValue = coupon.getMinBasketValue();
 
-            basket.applyDiscount(couponEntity.getDiscount());
+        if (minBasketValue != null && basket.getValue().compareTo(minBasketValue) < 0) {
+            throw new MinBasketValueNotMetException(code, basket.getValue(), minBasketValue);
+        }
 
-            return basket;
-        });
+        basket.applyDiscount(coupon.getDiscount());
+
+        return basket;
     }
 
     @Override
-    public CouponEntity createCoupon(@Valid final CreateCouponRequestDTO couponDTO) {
+    public CouponDomain createCoupon(@Valid final CreateCouponCommand couponDTO) {
 
         final CouponEntity couponEntity = CouponEntity.builder()
             .code(couponDTO.getCode().toUpperCase())
@@ -59,11 +66,11 @@ public class CouponServiceImpl implements CouponService {
             .minBasketValue(couponDTO.getMinBasketValue())
             .build();
 
-        return couponRepository.save(couponEntity);
+        return couponDataBaseMapper.entityToDomain(couponRepository.save(couponEntity));
     }
 
     @Override
-    public List<CouponEntity> getCoupons(@NotEmpty final List<String> codes) {
+    public List<CouponDomain> getCoupons(@NotEmpty final List<String> codes) {
 
         final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
 
@@ -71,6 +78,6 @@ public class CouponServiceImpl implements CouponService {
             foundCouponEntities::add,
             () -> log.warn("Coupon code '{}' not found, skipping", code)));
 
-        return foundCouponEntities;
+        return couponDataBaseMapper.entityToDomain(foundCouponEntities);
     }
 }

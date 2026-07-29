@@ -1,4 +1,4 @@
-package schwarz.jobs.interview.coupon.core.services.model;
+package schwarz.jobs.interview.coupon.web.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,18 +13,10 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponDomain {
+public class BasketRequest {
 
     @NotNull
-    private Long id;
-
-    @NotNull
-    private String code;
-
     @PositiveOrZero
-    private BigDecimal discount;
-
-    @PositiveOrZero
-    private BigDecimal minBasketValue;
+    private BigDecimal value;
 
 }
