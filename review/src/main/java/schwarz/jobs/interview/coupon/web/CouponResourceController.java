@@ -5,23 +5,24 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.ApplyCouponRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
-import schwarz.jobs.interview.coupon.web.dto.GetCouponsRequestDTO;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@Validated
 public class CouponResourceController {
 
     private final CouponService couponService;
@@ -63,8 +64,8 @@ public class CouponResourceController {
     }
 
     @GetMapping("/coupons")
-    public ResponseEntity<List<CouponEntity>> getCoupons(@RequestBody @Valid final GetCouponsRequestDTO couponRequestDTO) {
+    public ResponseEntity<List<CouponEntity>> getCoupons(@RequestParam @NotEmpty final List<String> codes) {
 
-        return ResponseEntity.ok(couponService.getCoupons(couponRequestDTO));
+        return ResponseEntity.ok(couponService.getCoupons(codes));
     }
 }

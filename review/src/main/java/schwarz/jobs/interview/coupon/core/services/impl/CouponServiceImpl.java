@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +19,6 @@ import schwarz.jobs.interview.coupon.core.services.CouponService;
 import schwarz.jobs.interview.coupon.core.services.MinBasketValueNotMetException;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
-import schwarz.jobs.interview.coupon.web.dto.GetCouponsRequestDTO;
 
 @Service
 @Validated
@@ -27,7 +27,7 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
 
-    public Optional<CouponEntity> getCoupon(@NotBlank final String code) {
+    private Optional<CouponEntity> getCoupon(@NotBlank final String code) {
         return couponRepository.findByCodeIgnoreCase(code);
     }
 
@@ -61,11 +61,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponEntity> getCoupons(@Valid final GetCouponsRequestDTO couponRequestDTO) {
+    public List<CouponEntity> getCoupons(@NotEmpty final List<String> codes) {
 
         final ArrayList<CouponEntity> foundCouponEntities = new ArrayList<>();
 
-        couponRequestDTO.getCodes().forEach(code -> foundCouponEntities.add(couponRepository.findByCodeIgnoreCase(code).get()));
+        codes.forEach(code -> foundCouponEntities.add(getCoupon(code).get()));
 
         return foundCouponEntities;
     }
