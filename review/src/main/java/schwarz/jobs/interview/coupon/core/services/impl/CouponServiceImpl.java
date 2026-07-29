@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import schwarz.jobs.interview.coupon.core.domain.CouponEntity;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.MinBasketValueNotMetException;
+import schwarz.jobs.interview.coupon.core.services.exception.MinBasketValueNotMetException;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
 import schwarz.jobs.interview.coupon.web.dto.CreateCouponRequestDTO;
 

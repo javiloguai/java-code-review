@@ -1,5 +1,6 @@
 package schwarz.jobs.interview.coupon.web;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -13,33 +14,53 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import schwarz.jobs.interview.coupon.core.services.MinBasketValueNotMetException;
+import lombok.extern.slf4j.Slf4j;
+import schwarz.jobs.interview.coupon.core.services.exception.MinBasketValueNotMetException;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Void> handleNotFound(final NoSuchElementException ex) {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<ErrorResponse> handleNotFound(final NoSuchElementException ex) {
+        return build(HttpStatus.NOT_FOUND, "Coupon not found", null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(final MethodArgumentNotValidException ex) {
-        final Map<String, String> errors = new LinkedHashMap<>();
+    public ResponseEntity<ErrorResponse> handleValidation(final MethodArgumentNotValidException ex) {
+        final Map<String, String> fieldErrors = new LinkedHashMap<>();
         for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
         }
-        return ResponseEntity.badRequest().body(errors);
+        return build(HttpStatus.BAD_REQUEST, "Validation failed", fieldErrors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleConstraintViolation(final ConstraintViolationException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(final ConstraintViolationException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
     @ExceptionHandler(MinBasketValueNotMetException.class)
-    public ResponseEntity<String> handleMinBasketValueNotMet(final MinBasketValueNotMetException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleMinBasketValueNotMet(final MinBasketValueNotMetException ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpected(final Exception ex) {
+        log.error("Unhandled exception", ex);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong", null);
+    }
+
+    private ResponseEntity<ErrorResponse> build(final HttpStatus status, final String message, final Map<String, String> fieldErrors) {
+        final ErrorResponse body = ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(status.value())
+            .error(status.getReasonPhrase())
+            .message(message)
+            .fieldErrors(fieldErrors)
+            .build();
+
+        return ResponseEntity.status(status).body(body);
     }
 
 }
