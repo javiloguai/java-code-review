@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 @Table(name = "coupons")
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

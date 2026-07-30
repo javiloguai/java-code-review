@@ -80,6 +80,8 @@ class CouponServiceImplTest {
 
             assertThat(result.isApplicationSuccessful()).isTrue();
             assertThat(result.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
+            assertThat(result.getFinalValue())
+                .isEqualByComparingTo(basketValue.multiply(BigDecimal.valueOf(0.9)));
         }
 
         @Test

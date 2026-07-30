@@ -20,6 +20,8 @@ public class BasketResponse {
 
     private BigDecimal appliedDiscount;
 
+    private BigDecimal finalValue;
+
     private boolean applicationSuccessful;
 
 }

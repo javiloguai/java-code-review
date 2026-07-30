@@ -1,6 +1,7 @@
 package schwarz.jobs.interview.coupon.core.services.model.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -25,14 +26,20 @@ public class BasketDomain {
 
     private BigDecimal appliedDiscount;
 
+    private BigDecimal finalValue;
+
     private boolean applicationSuccessful;
 
     /**
-     * Marks the discount as applied to this basket.
+     * Applies a percentage discount to this basket, working out {@link #finalValue}.
      */
-    public void applyDiscount(final BigDecimal discount) {
+    public void applyDiscount(final BigDecimal discountPercentage) {
         this.applicationSuccessful = true;
-        this.appliedDiscount = discount;
+        this.appliedDiscount = discountPercentage;
+
+        final BigDecimal discountAmount = value.multiply(discountPercentage)
+            .divide(BigDecimal.valueOf(100));
+        this.finalValue = value.subtract(discountAmount).setScale(2, RoundingMode.HALF_UP);
     }
 
 }
