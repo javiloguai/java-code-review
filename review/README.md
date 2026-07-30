@@ -4,7 +4,7 @@ Technical Test Spring Boot
 
 ## Code review
 
-> All the changes made during the code review of this test are documented in [REVIEW.md](REVIEW.md).
+> All the changes made during the code review of this test are documented in [REVIEW_en.md](REVIEW_en.md).
 
 This application implemented using:
 
@@ -51,6 +51,13 @@ This application implemented using:
 ## To start the API
 
 run ./gradlew bootRun
+
+Or with Docker, no local JDK/Gradle needed:
+
+```
+docker build -t coupon-api .
+docker run -p 8080:8080 coupon-api
+```
 
 ## To access H2 DB console
 

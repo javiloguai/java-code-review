@@ -1,5 +1,7 @@
 # Review notes — Coupon Service
 
+*[Read this in English](REVIEW_en.md)*
+
 Registro de lo que hemos ido encontrando y cambiando, en el orden en que ha ido saliendo.
 
 ----------------------------------------------------------
@@ -115,3 +117,5 @@ Registro de lo que hemos ido encontrando y cambiando, en el orden en que ha ido 
 ---------------------------------------------------------- 
 - Nos damos cuenta de que hemos asumido que `discount` es un porcentaje pero no lo hemos resdtringido para que no passe de 100. Añadido `@DecimalMax("100")` en las validaciones.
 
+----------------------------------------------------------
+- Añadido dockerFile para facilitar validacion de la prueba
