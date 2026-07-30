@@ -221,6 +221,37 @@ class CouponServiceImplTest {
 
             assertThat(result).isEmpty();
         }
+
+        @Test
+        @DisplayName("Given an empty codes list, when getCoupons, then every coupon is returned")
+        void givenEmptyCodesListWhenGetCouponsThenEveryCouponIsReturned() {
+            final CouponEntity entity1 = CouponEntity.builder().id(1L).code("TEST1").build();
+            final CouponEntity entity2 = CouponEntity.builder().id(2L).code("TEST2").build();
+            final List<CouponDomain> expected = List.of(
+                CouponDomain.builder().id(1L).code("TEST1").build(),
+                CouponDomain.builder().id(2L).code("TEST2").build());
+
+            when(couponRepository.findAll()).thenReturn(List.of(entity1, entity2));
+            when(couponDataBaseMapper.entityToDomain(List.of(entity1, entity2))).thenReturn(expected);
+
+            final List<CouponDomain> result = couponService.getCoupons(List.of());
+
+            assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("Given null codes, when getCoupons, then every coupon is returned")
+        void givenNullCodesWhenGetCouponsThenEveryCouponIsReturned() {
+            final CouponEntity entity1 = CouponEntity.builder().id(1L).code("TEST1").build();
+            final List<CouponDomain> expected = List.of(CouponDomain.builder().id(1L).code("TEST1").build());
+
+            when(couponRepository.findAll()).thenReturn(List.of(entity1));
+            when(couponDataBaseMapper.entityToDomain(List.of(entity1))).thenReturn(expected);
+
+            final List<CouponDomain> result = couponService.getCoupons(null);
+
+            assertThat(result).isEqualTo(expected);
+        }
     }
 
     @Nested
@@ -254,13 +285,6 @@ class CouponServiceImplTest {
             final BasketDomain basket = BasketDomain.builder().value(BigDecimal.TEN).build();
 
             assertThatThrownBy(() -> validatedCouponService.apply(basket, " "))
-                .isInstanceOf(ConstraintViolationException.class);
-        }
-
-        @Test
-        @DisplayName("Given an empty codes list, when getCoupons, then ConstraintViolationException is thrown")
-        void givenEmptyCodesListWhenGetCouponsThenConstraintViolationExceptionIsThrown() {
-            assertThatThrownBy(() -> validatedCouponService.getCoupons(List.of()))
                 .isInstanceOf(ConstraintViolationException.class);
         }
     }

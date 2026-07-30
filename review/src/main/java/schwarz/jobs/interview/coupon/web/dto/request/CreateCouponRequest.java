@@ -2,6 +2,7 @@ package schwarz.jobs.interview.coupon.web.dto.request;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -24,6 +25,7 @@ public class CreateCouponRequest {
 
     @NotNull
     @Positive
+    @DecimalMax("100")
     private BigDecimal discount;
 
     @NotBlank

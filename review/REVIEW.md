@@ -110,3 +110,8 @@ Registro de lo que hemos ido encontrando y cambiando, en el orden en que ha ido 
 - Revisando nos hemos dado cuenta de que `apply()` nunca calculaba el precio final de la cesta con descuento. `BasketDomain.applyDiscount()` solo marcaba `applicationSuccessful=true` y guardaba el `discount` del cupón tal cual. Alomejor es decision de diseño que que se calcule en la parte cliente, pero no hay contrato ni sabemos nada; Asumimos que es un error a posta y debemos calcularlo. Decidimos asumir `discount` como porcentaje porque encaja mejor con los datos de semilla. Se añade un campo nuevo `finalValue` y se mantiene el valor anterior.
 ----------------------------------------------------------
 - Documentación Swagger añadida en el controller.
+----------------------------------------------------------
+- Nos damos cuenta de que no contemplamos obtener todos los códigos para saber los disponibles. Quitamos `@NotEmpty` de las validaciones y llamamos `couponRepository.findAll()` cuando no hay codigos.
+---------------------------------------------------------- 
+- Nos damos cuenta de que hemos asumido que `discount` es un porcentaje pero no lo hemos resdtringido para que no passe de 100. Añadido `@DecimalMax("100")` en las validaciones.
+

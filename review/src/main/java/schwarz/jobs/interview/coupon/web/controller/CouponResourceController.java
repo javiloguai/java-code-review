@@ -4,7 +4,6 @@ package schwarz.jobs.interview.coupon.web.controller;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,14 +99,15 @@ public class CouponResourceController {
     }
 
     /**
-     * Looks up coupons by code. Unknown codes are skipped, not an error.
+     * Get coupons by code. Unknown codes are skipped, not an error.
+     * If no codes are given, returns every coupon.
      */
-    @ApiOperation("Looks up coupons by code")
-    @ApiResponse(code = 200, message = "Matching coupons (unknown codes are skipped)")
+    @ApiOperation("Get coupons by code")
+    @ApiResponse(code = 200, message = "Matching coupons (unknown codes are skipped); all coupons if none given")
     @GetMapping("/coupons")
     public ResponseEntity<List<CouponResponse>> getCoupons(
-        @ApiParam(value = "Coupon codes to look up", required = true)
-        @RequestParam @NotEmpty final List<String> codes) {
+        @ApiParam(value = "Coupon codes to look up; omit to get every coupon")
+        @RequestParam(required = false) final List<String> codes) {
 
         return ResponseEntity.ok(couponResponseMapper.toResponses(couponService.getCoupons(codes)));
     }

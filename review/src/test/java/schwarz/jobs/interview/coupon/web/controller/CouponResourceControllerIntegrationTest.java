@@ -211,6 +211,19 @@ class CouponResourceControllerIntegrationTest {
 
             assertThat(error.getFieldErrors()).containsKey("code");
         }
+
+        @Test
+        @DisplayName("Given a discount over 100, when create, then 400 is returned with a field error")
+        void givenDiscountOver100WhenCreateThen400IsReturnedWithFieldError() throws Exception {
+            final CreateCouponRequest request = CreateCouponRequest.builder()
+                .code("NEW4")
+                .discount(BigDecimal.valueOf(150))
+                .build();
+
+            final ErrorResponse error = postAndReturn("/api/create", request, 400, ErrorResponse.class);
+
+            assertThat(error.getFieldErrors()).containsKey("discount");
+        }
     }
 
     @Nested
@@ -242,14 +255,12 @@ class CouponResourceControllerIntegrationTest {
         }
 
         @Test
-        @DisplayName("Given no codes are provided, when getCoupons, then 400 is returned")
-        void givenNoCodesProvidedWhenGetCouponsThen400IsReturned() throws Exception {
-            final MvcResult result = mockMvc.perform(get("/api/coupons"))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+        @DisplayName("Given no codes are provided, when getCoupons, then every coupon is returned")
+        void givenNoCodesProvidedWhenGetCouponsThenEveryCouponIsReturned() throws Exception {
+            final List<CouponResponse> result = getAndReturnList("/api/coupons");
 
-            final ErrorResponse error = objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class);
-            assertThat(error.getMessage()).contains("codes");
+            assertThat(result).extracting(CouponResponse::getCode)
+                .containsExactlyInAnyOrder("TEST1", "TEST2", "TEST3");
         }
     }
 

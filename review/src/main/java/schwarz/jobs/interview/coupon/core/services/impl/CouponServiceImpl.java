@@ -15,7 +15,6 @@ import schwarz.jobs.interview.coupon.core.services.model.domain.CouponDomain;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +77,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponDomain> getCoupons(@NotEmpty final List<String> codes) {
-        return couponDataBaseMapper.entityToDomain(couponRepository.findByCodeIgnoreCaseIn(codes));
+    public List<CouponDomain> getCoupons(final List<String> codes) {
+        final List<CouponEntity> couponEntities = (codes == null || codes.isEmpty())
+            ? couponRepository.findAll()
+            : couponRepository.findByCodeIgnoreCaseIn(codes);
+
+        return couponDataBaseMapper.entityToDomain(couponEntities);
     }
 }
